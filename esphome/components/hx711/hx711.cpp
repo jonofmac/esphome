@@ -49,9 +49,7 @@ bool HX711Sensor::read_sensor_(uint32_t *result) {
       this->sck_pin_->digital_write(true);
       delayMicroseconds(1);
       uint8_t samples = this->dout_pin_->digital_read();
-      delayMicroseconds(1);
       samples += this->dout_pin_->digital_read();
-      delayMicroseconds(1);
       samples += this->dout_pin_->digital_read();
       // If at least 2 of the 3 samples are high, then we assume high state on pin
       if (samples >= 2)
@@ -65,9 +63,9 @@ bool HX711Sensor::read_sensor_(uint32_t *result) {
     // Cycle clock pin for gain setting
     for (uint8_t i = 0; i < this->gain_; i++) {
       this->sck_pin_->digital_write(true);
-      delayMicroseconds(3);
+      delayMicroseconds(1);
       this->sck_pin_->digital_write(false);
-      delayMicroseconds(3);
+      delayMicroseconds(1);
     }
   }
 
@@ -75,7 +73,7 @@ bool HX711Sensor::read_sensor_(uint32_t *result) {
     data |= 0xFF000000ULL;
   }
 
-  if (sample_error)
+  if (sample_error > 0)
     ESP_LOGW(TAG, "HX711 measurement had some detected noise!");
 
   if (result != nullptr)
