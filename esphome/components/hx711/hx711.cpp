@@ -48,9 +48,9 @@ bool HX711Sensor::read_sensor_(uint32_t *result) {
     for (uint8_t i = 0; i < 24; i++) {
       this->sck_pin_->digital_write(true);
       delayMicroseconds(1);
-      uint8_t samples = this->dout_pin_->digital_read();
-      samples += this->dout_pin_->digital_read();
-      samples += this->dout_pin_->digital_read();
+      uint8_t samples = (this->dout_pin_->digital_read() > 0 ) ? 1 : 0;
+      samples += (this->dout_pin_->digital_read() > 0 ) ? 1 : 0;
+      samples += (this->dout_pin_->digital_read() > 0 ) ? 1 : 0;
       // If at least 2 of the 3 samples are high, then we assume high state on pin
       if (samples >= 2)
         data |= uint32_t(1) << (23 - i);
